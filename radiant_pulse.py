@@ -1,26 +1,32 @@
-import flet as ft
+import streamlit as st
+import pandas as pd
+from datetime import datetime, timedelta
 
-def main(page: ft.Page):
-    page.title = "Radiant Pulse"
-    page.theme_mode = "dark"
-    page.scroll = "adaptive"
+# Theme & Setup
+st.set_page_config(page_title="Radiant Pulse", layout="centered")
 
-    # Header
-    page.add(ft.Text("⚡ RADIANT PULSE", size=30, weight="bold"))
-    page.add(ft.ProgressBar(value=0.05, color="red")) # Day 1 Progress
+st.title("⚡ RADIANT PULSE")
+st.write("---")
 
-    # Input Fields
-    vandal_score = ft.TextField(label="Hard Bots (Vandal)", keyboard_type="number")
-    body_practice = ft.Checkbox(label="Body Practicing Done")
-    
-    def save_clicked(e):
-        page.add(ft.Text(f"Saved! Vandal: {vandal_score.value}", color="green"))
-        page.update()
+# 1. 6-Month Progress
+start_date = datetime(2026, 4, 16)
+days_passed = (datetime.now() - start_date).days
+st.metric("The Radiant Grind", f"Day {days_passed} / 180")
+st.progress(min(days_passed / 180, 1.0))
 
-    page.add(
-        vandal_score,
-        body_practice,
-        ft.ElevatedButton("Save Daily Grind", on_click=save_clicked)
-    )
+# 2. Today's Range Scores
+st.header("🎯 Range Practice")
+vandal_hard = st.number_input("Hard Bots (Vandal)", 0, 30, 0)
+sheriff_hard = st.number_input("Hard Bots (Sheriff)", 0, 30, 0)
+jett_knives = st.number_input("Eliminate 50 (Jett Knives) Seconds", 0.0, 100.0, 0.0)
 
-ft.app(target=main)
+# 3. Body & Routine
+st.header("💪 Body & Mind")
+body_done = st.checkbox("Body Practicing Done (10 AM Alarm)")
+tracking_done = st.checkbox("Tracking Bots Practice (No shooting)")
+
+if st.button("Save Entry"):
+    st.success("Progress Logged! Keep grinding.")
+
+# 4. The "Straggling" Tip
+st.info("💡 If tracking feels 'jittery' today, check your grip tension. Aim for a 4/10 squeeze.")
